@@ -1,0 +1,31 @@
+abstract final class AppSpacing {
+  static const xxs = 4.0;
+  static const xs = 8.0;
+  static const sm = 12.0;
+  static const md = 16.0;
+  static const lg = 24.0;
+  static const xl = 32.0;
+  static const xxl = 48.0;
+  static const contentWidth = 1120.0;
+  static const formWidth = 640.0;
+  static const desktopBreakpoint = 840.0;
+  static const compactBreakpoint = 480.0;
+  static const cardRadius = 20.0;
+  static const smallRadius = 12.0;
+  static const coverWidth = 92.0;
+  static const coverHeight = 132.0;
+  static const heroCoverWidth = 140.0;
+  static const heroCoverHeight = 194.0;
+  static const detailCoverWidth = 168.0;
+  static const detailCoverHeight = 232.0;
+  static const iconSize = 24.0;
+  static const largeIconSize = 48.0;
+  static const navigationHeight = 76.0;
+  static const borderWidth = 1.0;
+  static const progressHeight = 5.0;
+  static const gridExtent = 320.0;
+  static const minTouchTarget = 48.0;
+  static const badgeIconSize = 14.0;
+  static const badgeHorizontalPadding = 10.0;
+  static const badgeVerticalPadding = 6.0;
+}
