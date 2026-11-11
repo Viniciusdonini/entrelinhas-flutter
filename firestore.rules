@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function ownsLibrary(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validBook(data) {
+      return data.keys().hasAll([
+          'title', 'author', 'totalPages', 'genre', 'currentPage',
+          'status', 'notes', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'title', 'author', 'totalPages', 'genre', 'currentPage',
+          'status', 'notes', 'createdAt', 'updatedAt'
+        ])
+        && data.title is string
+        && data.title.size() > 0 && data.title.size() <= 120
+        && data.title == data.title.trim()
+        && data.author is string
+        && data.author.size() > 0 && data.author.size() <= 100
+        && data.author == data.author.trim()
+        && data.genre is string && data.genre.size() <= 60
+        && data.totalPages is int
+        && data.totalPages >= 1 && data.totalPages <= 20000
+        && data.currentPage is int
+        && data.currentPage >= 0 && data.currentPage <= data.totalPages
+        && data.status in ['wantToRead', 'reading', 'finished']
+        && (data.status != 'wantToRead' || data.currentPage == 0)
+        && (data.status != 'finished' || data.currentPage == data.totalPages)
+        && data.notes is string && data.notes.size() <= 2000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    match /users/{userId}/books/{bookId} {
+      allow read, delete: if ownsLibrary(userId);
+      allow create: if ownsLibrary(userId)
+        && validBook(request.resource.data)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+      allow update: if ownsLibrary(userId)
+        && validBook(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+    }
+  }
+}
