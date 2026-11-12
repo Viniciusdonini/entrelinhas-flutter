@@ -111,6 +111,72 @@ void main() {
       );
     });
   });
+
+  group('Optional cover URL', () {
+    test('accepts missing and blank input', () {
+      for (final value in <String?>[null, '', '   ', '\t\n']) {
+        expect(Validators.coverUrl(value), isNull);
+      }
+    });
+
+    test('accepts HTTPS, escaped spaces and image endpoints with queries', () {
+      for (final value in [
+        'https://example.com/capa.jpg',
+        'https://images.example.com/minha%20capa.jpg?size=300&name=Capa%20azul',
+        'https://images.example.com/cover?id=42',
+      ]) {
+        expect(Validators.coverUrl(value), isNull, reason: value);
+      }
+    });
+
+    test('rejects non-HTTPS schemes and missing schemes', () {
+      for (final value in [
+        'http://example.com/capa.jpg',
+        'file:///capa.jpg',
+        'data:image/png;base64,aGVsbG8=',
+        'javascript:alert(1)',
+        'example.com/capa.jpg',
+      ]) {
+        expect(Validators.coverUrl(value), isNotNull, reason: value);
+      }
+    });
+
+    test('rejects credentials in the URL', () {
+      for (final value in [
+        'https://user:password@example.com/capa.jpg',
+        'https://user@example.com/capa.jpg',
+      ]) {
+        expect(Validators.coverUrl(value), isNotNull, reason: value);
+      }
+    });
+
+    test('rejects malformed hosts and literal whitespace', () {
+      for (final value in [
+        'https:///capa.jpg',
+        'https://example..com/capa.jpg',
+        'https://-example.com/capa.jpg',
+        'https://example-.com/capa.jpg',
+        'https://exa_mple.com/capa.jpg',
+        'https://example.com/capa azul.jpg',
+        'https://example.com/capa\n.jpg',
+        'https://example.com/\tcapa.jpg',
+      ]) {
+        expect(Validators.coverUrl(value), isNotNull, reason: value);
+      }
+    });
+
+    test('accepts 2048 characters and rejects 2049', () {
+      const prefix = 'https://example.com/';
+      expect(
+        Validators.coverUrl('$prefix${_text(2048 - prefix.length)}'),
+        isNull,
+      );
+      expect(
+        Validators.coverUrl('$prefix${_text(2049 - prefix.length)}'),
+        isNotNull,
+      );
+    });
+  });
 }
 
 String _text(int length) => List.filled(length, 'a').join();

@@ -29,6 +29,26 @@ abstract final class Validators {
 
   static String? genre(String? value) =>
       (value?.trim().length ?? 0) > 60 ? AppStrings.genreLength : null;
+
+  static String? coverUrl(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return null;
+    if (text.length > 2048) return AppStrings.coverUrlLength;
+
+    const hostLabel = r'[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?';
+    final pattern = RegExp(
+      r'^[hH][tT][tT][pP][sS]://' +
+          hostLabel +
+          r'(?:\.' +
+          hostLabel +
+          r')*(?::[0-9]{1,5})?(?:[/?#][^\s\\]*)?$',
+    );
+    final uri = Uri.tryParse(text);
+    return uri == null || !pattern.hasMatch(text)
+        ? AppStrings.coverUrlInvalid
+        : null;
+  }
+
   static String? notes(String? value) =>
       (value?.trim().length ?? 0) > 2000 ? AppStrings.notesLength : null;
 }

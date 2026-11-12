@@ -13,6 +13,7 @@ import '../../services/book_service.dart';
 import '../../services/service_exception.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/async_state_view.dart';
+import '../../widgets/book_cover.dart';
 
 class BookFormScreen extends StatefulWidget {
   const BookFormScreen({super.key, required this.service, this.bookId});
@@ -28,6 +29,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _authorController = TextEditingController();
+  final _coverUrlController = TextEditingController();
   final _genreController = TextEditingController();
   final _totalPagesController = TextEditingController();
   final _currentPageController = TextEditingController(text: '0');
@@ -47,6 +49,13 @@ class _BookFormScreenState extends State<BookFormScreen> {
   @override
   void initState() {
     super.initState();
+    for (final controller in [
+      _titleController,
+      _authorController,
+      _coverUrlController,
+    ]) {
+      controller.addListener(_refreshCoverPreview);
+    }
     if (_isEditing) {
       _loadBook();
     }
@@ -70,6 +79,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
         for (final controller in [
           _titleController,
           _authorController,
+          _coverUrlController,
           _genreController,
           _totalPagesController,
           _notesController,
@@ -98,6 +108,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
       _existingBook = book;
       _titleController.text = book.title;
       _authorController.text = book.author;
+      _coverUrlController.text = book.coverUrl;
       _genreController.text = book.genre;
       _totalPagesController.text = book.totalPages.toString();
       _currentPageController.text = book.currentPage.toString();
@@ -118,6 +129,21 @@ class _BookFormScreenState extends State<BookFormScreen> {
 
   bool _isCurrentLoad(int generation) =>
       mounted && generation == _loadGeneration;
+
+  void _refreshCoverPreview() {
+    if (mounted) setState(() {});
+  }
+
+  Book get _previewBook {
+    final title = _titleController.text.trim();
+    final author = _authorController.text.trim();
+    return Book(
+      title: title.isEmpty ? AppStrings.coverPreviewBookTitle : title,
+      author: author.isEmpty ? AppStrings.coverPreviewAuthor : author,
+      totalPages: int.tryParse(_totalPagesController.text.trim()) ?? 1,
+      coverUrl: _coverUrlController.text.trim(),
+    );
+  }
 
   void _changeStatus(BookStatus? value) {
     if (value == null) return;
@@ -154,6 +180,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
       id: _existingBook?.id ?? '',
       title: _titleController.text.trim(),
       author: _authorController.text.trim(),
+      coverUrl: _coverUrlController.text.trim(),
       genre: _genreController.text.trim(),
       totalPages: totalPages!,
       currentPage: currentPage,
@@ -195,8 +222,16 @@ class _BookFormScreenState extends State<BookFormScreen> {
 
   @override
   void dispose() {
+    for (final controller in [
+      _titleController,
+      _authorController,
+      _coverUrlController,
+    ]) {
+      controller.removeListener(_refreshCoverPreview);
+    }
     _titleController.dispose();
     _authorController.dispose();
+    _coverUrlController.dispose();
     _genreController.dispose();
     _totalPagesController.dispose();
     _currentPageController.dispose();
@@ -266,6 +301,40 @@ class _BookFormScreenState extends State<BookFormScreen> {
                       ),
                       validator: Validators.author,
                     ),
+                    const SizedBox(height: AppSpacing.lg),
+                    TextFormField(
+                      key: const ValueKey('book-cover-url'),
+                      controller: _coverUrlController,
+                      enabled: !_saving,
+                      keyboardType: TextInputType.url,
+                      textCapitalization: TextCapitalization.none,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        labelText: AppStrings.coverUrlLabel,
+                        hintText: AppStrings.coverUrlHint,
+                        helperText: AppStrings.coverUrlHelper,
+                        helperMaxLines: 3,
+                      ),
+                      validator: Validators.coverUrl,
+                    ),
+                    if (Validators.coverUrl(_coverUrlController.text) ==
+                        null) ...[
+                      const SizedBox(height: AppSpacing.lg),
+                      Text(
+                        AppStrings.coverPreviewTitle,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Center(
+                        child: BookCover(
+                          _previewBook,
+                          width: AppSpacing.heroCoverWidth,
+                          height: AppSpacing.heroCoverHeight,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.lg),
                     TextFormField(
                       key: const ValueKey('book-genre'),

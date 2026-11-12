@@ -16,6 +16,7 @@ void main() {
         currentPage: 80,
         status: BookStatus.reading,
         notes: 'Retomar no capítulo cinco.',
+        coverUrl: 'https://example.com/capas/biblioteca.jpg',
         createdAt: DateTime.utc(2026, 11, 1),
         updatedAt: DateTime.utc(2026, 11, 9, 12),
       );
@@ -34,6 +35,7 @@ void main() {
       expect(restored.currentPage, original.currentPage);
       expect(restored.status, original.status);
       expect(restored.notes, original.notes);
+      expect(restored.coverUrl, original.coverUrl);
       expect(restored.createdAt, original.createdAt);
       expect(restored.updatedAt, original.updatedAt);
       expect(original.toMap().containsKey('id'), isFalse);
@@ -49,8 +51,48 @@ void main() {
       expect(book.currentPage, 0);
       expect(book.genre, isEmpty);
       expect(book.notes, isEmpty);
+      expect(book.coverUrl, isEmpty);
       expect(book.createdAt, isNull);
       expect(book.updatedAt, isNull);
+    });
+
+    test('accepts legacy records with a null cover URL', () {
+      final book = Book.fromMap(
+        id: 'legacy-book',
+        data: {
+          'title': 'Livro anterior às capas',
+          'author': 'Autora',
+          'totalPages': 100,
+          'coverUrl': null,
+        },
+      );
+
+      expect(book.coverUrl, isEmpty);
+      expect(book.toMap()['coverUrl'], isEmpty);
+    });
+
+    test('copyWith preserves, replaces and explicitly removes a cover URL', () {
+      const original = Book(
+        id: 'book-with-cover',
+        title: 'Livro com capa',
+        author: 'Autora',
+        totalPages: 100,
+        coverUrl: 'https://example.com/original.jpg',
+      );
+
+      expect(
+        original.copyWith(title: 'Outro título').coverUrl,
+        original.coverUrl,
+      );
+      expect(
+        original.copyWith(coverUrl: 'https://example.com/nova.jpg').coverUrl,
+        'https://example.com/nova.jpg',
+      );
+      final withoutCover = original.copyWith(coverUrl: '');
+      expect(withoutCover.coverUrl, isEmpty);
+      expect(withoutCover.toMap()['coverUrl'], isEmpty);
+      expect(original.coverUrl, 'https://example.com/original.jpg');
+      expect(withoutCover.id, original.id);
     });
 
     test('rejects unknown statuses rather than silently changing data', () {

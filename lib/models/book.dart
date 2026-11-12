@@ -11,6 +11,7 @@ class Book {
     this.currentPage = 0,
     this.status = BookStatus.wantToRead,
     this.notes = '',
+    this.coverUrl = '',
     this.createdAt,
     this.updatedAt,
   });
@@ -30,6 +31,7 @@ class Book {
         data['status'] as String? ?? BookStatus.wantToRead.name,
       ),
       notes: data['notes'] as String? ?? '',
+      coverUrl: data['coverUrl'] as String? ?? '',
       createdAt: _readDate(data['createdAt']),
       updatedAt: _readDate(data['updatedAt']),
     );
@@ -43,6 +45,7 @@ class Book {
   final int currentPage;
   final BookStatus status;
   final String notes;
+  final String coverUrl;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -55,6 +58,7 @@ class Book {
     'currentPage': currentPage,
     'status': status.name,
     'notes': notes,
+    'coverUrl': coverUrl,
     'createdAt': createdAt?.toUtc().toIso8601String(),
     'updatedAt': updatedAt?.toUtc().toIso8601String(),
   };
@@ -68,6 +72,7 @@ class Book {
     int? currentPage,
     BookStatus? status,
     String? notes,
+    String? coverUrl,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -80,6 +85,7 @@ class Book {
       currentPage: currentPage ?? this.currentPage,
       status: status ?? this.status,
       notes: notes ?? this.notes,
+      coverUrl: coverUrl ?? this.coverUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

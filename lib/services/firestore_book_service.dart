@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../core/constants/service_messages.dart';
+import '../core/utils/validators.dart';
 import '../models/book.dart';
 import '../models/book_status.dart';
 import 'book_service.dart';
@@ -118,6 +119,7 @@ class FirestoreBookService implements BookService {
       author: book.author.trim(),
       genre: book.genre.trim(),
       notes: book.notes.trim(),
+      coverUrl: book.coverUrl.trim(),
     );
     if (normalized.title.isEmpty || normalized.title.length > 120) {
       throw const ServiceException(ServiceMessages.invalidTitle);
@@ -127,6 +129,10 @@ class FirestoreBookService implements BookService {
     }
     if (normalized.genre.length > 60 || normalized.notes.length > 2000) {
       throw const ServiceException(ServiceMessages.textTooLong);
+    }
+    final coverUrlError = Validators.coverUrl(normalized.coverUrl);
+    if (coverUrlError != null) {
+      throw ServiceException(coverUrlError);
     }
     if (normalized.totalPages < 1 || normalized.totalPages > 20000) {
       throw const ServiceException(ServiceMessages.invalidTotalPages);

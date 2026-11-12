@@ -45,6 +45,13 @@ abstract final class AppStrings {
   static const authorHint = 'Quem escreveu esta história?';
   static const genreLabel = 'Gênero';
   static const genreHint = 'Ex.: romance, tecnologia, biografia';
+  static const coverUrlLabel = 'Link da capa (opcional)';
+  static const coverUrlHint = 'https://exemplo.com/capa.jpg';
+  static const coverUrlHelper =
+      'Use o link direto de uma imagem. Deixe vazio para usar a capa decorativa.';
+  static const coverPreviewTitle = 'Prévia da capa';
+  static const coverPreviewBookTitle = 'Título do livro';
+  static const coverPreviewAuthor = 'Autoria';
   static const totalPagesLabel = 'Total de páginas *';
   static const totalPagesHint = 'Ex.: 240';
   static const currentPageLabel = 'Página atual';
@@ -121,4 +128,6 @@ abstract final class AppStrings {
       'A página atual deve estar entre zero e o total de páginas.';
   static const genreLength = 'Use no máximo 60 caracteres.';
   static const notesLength = 'Use no máximo 2.000 caracteres.';
+  static const coverUrlInvalid = 'Informe um link HTTPS válido para a imagem.';
+  static const coverUrlLength = 'Use um link com no máximo 2.048 caracteres.';
 }

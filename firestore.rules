@@ -6,6 +6,18 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
+    function validCoverUrl(data) {
+      // Legacy documents may omit the field; an empty URL removes the cover.
+      // Host/port are checked syntactically, without resolving the image URL.
+      return !('coverUrl' in data)
+        || (data.coverUrl is string
+          && data.coverUrl.size() <= 2048
+          && (data.coverUrl == ''
+            || data.coverUrl.matches(
+              '^[Hh][Tt][Tt][Pp][Ss]://([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(:[0-9]{1,5})?([/?#][^\\s\\\\\\p{Z}\\x{000B}\\x{FEFF}]*)?$'
+            )));
+    }
+
     function validBook(data) {
       return data.keys().hasAll([
           'title', 'author', 'totalPages', 'genre', 'currentPage',
@@ -13,7 +25,7 @@ service cloud.firestore {
         ])
         && data.keys().hasOnly([
           'title', 'author', 'totalPages', 'genre', 'currentPage',
-          'status', 'notes', 'createdAt', 'updatedAt'
+          'status', 'notes', 'createdAt', 'updatedAt', 'coverUrl'
         ])
         && data.title is string
         && data.title.size() > 0 && data.title.size() <= 120
@@ -30,6 +42,7 @@ service cloud.firestore {
         && (data.status != 'wantToRead' || data.currentPage == 0)
         && (data.status != 'finished' || data.currentPage == data.totalPages)
         && data.notes is string && data.notes.size() <= 2000
+        && validCoverUrl(data)
         && data.createdAt is timestamp
         && data.updatedAt is timestamp;
     }
