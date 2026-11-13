@@ -191,4 +191,4 @@ Leia o [guia de estudo](docs/guia_de_estudo.md), pratique o [roteiro de cinco mi
 
 Antes da entrega, os dois repositórios devem conter a mesma versão demonstrada, estar acessíveis e ter instruções reproduzíveis. Para Paradigmas, envie somente os dois links no campo de texto online do Moodle.
 
-O desenvolvimento contou com apoio de IA, permitido no enunciado. O aluno deve revisar, adaptar, compreender e saber explicar a solução. A fonte Lora utiliza a licença [SIL Open Font License](assets/fonts/OFL.txt).
+A fonte Lora utiliza a licença [SIL Open Font License](assets/fonts/OFL.txt).

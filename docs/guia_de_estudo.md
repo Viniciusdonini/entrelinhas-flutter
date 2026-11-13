@@ -122,4 +122,4 @@ No Flutter, execute `dart format .`, `flutter analyze` e `flutter test`. Depois 
 14. Quais recursos da API podem ser demonstrados pelo `rest.http`?
 15. Quais verificações foram executadas e quais continuam pendentes?
 
-O apoio de IA é permitido, mas é necessário entender a solução. Faça uma alteração pequena, execute seus testes e acompanhe uma operação de ponta a ponta antes da apresentação.
+Faça uma alteração pequena, execute seus testes e acompanhe uma operação de ponta a ponta antes da apresentação. Revise o código e pratique a explicação com suas próprias palavras.
