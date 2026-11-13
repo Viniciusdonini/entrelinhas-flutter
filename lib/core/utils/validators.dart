@@ -1,6 +1,29 @@
 import '../constants/app_strings.dart';
 
 abstract final class Validators {
+  static String? name(String? value) {
+    final text = value?.trim() ?? '';
+    return text.length < 2 || text.length > 100 ? AppStrings.nameInvalid : null;
+  }
+
+  static String? email(String? value) {
+    final text = value?.trim() ?? '';
+    return text.length > 254 ||
+            !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(text)
+        ? AppStrings.emailInvalid
+        : null;
+  }
+
+  static String? password(String? value) =>
+      value == null || value.length < 8 || value.length > 128
+      ? AppStrings.passwordInvalid
+      : null;
+
+  static String? passwordConfirmation(String? value, String password) =>
+      value != password
+      ? AppStrings.passwordsDifferent
+      : Validators.password(value);
+
   static String? title(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty) return AppStrings.titleRequired;

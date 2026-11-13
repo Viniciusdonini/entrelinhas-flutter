@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Book serialization', () {
-    test('round-trips all fields through JSON without Firebase types', () {
+    test('round-trips all fields through JSON without backend SDK types', () {
       final original = Book(
         id: 'book-1',
         title: 'Uma biblioteca própria',

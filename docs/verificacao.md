@@ -1,40 +1,58 @@
-# Registro de verificação
+# Registro de verificação — versão integrada Laravel
 
-Verificações locais e REST atualizadas em **12/11/2026**, com Flutter 3.47.1, Dart 3.13.1 e os emuladores Firebase Authentication e Firestore, no projeto fictício `demo-entrelinhas`. A rodada web concluiu a captura das cinco telas, mas o cenário separado de CRUD parou na inicialização. A execução anterior, em 09/11/2026, aprovou dois testes com Chrome/ChromeDriver 157.0.8103.38 e não substitui a validação das alterações atuais.
+Verificações de **13/11/2026**, após a mudança para a opção A: Flutter/Dart consome a API Laravel por HTTP, com Services e Repositories nas duas aplicações.
 
 | Verificação | Resultado |
 | --- | --- |
-| `dart format .` | 36 arquivos conferidos, sem alterações necessárias |
-| `flutter analyze` | Nenhum problema encontrado |
-| `flutter test` | 33 testes aprovados |
-| Script REST de CRUD e regras | Aprovado, incluindo capa opcional, registros antigos, rejeições e isolamento |
-| Integração Flutter no Chrome | Cenário de CRUD interrompido por timeout na inicialização, antes do cadastro |
-| Prints | Cinco PNGs atualizados em 12/11/2026, sem imagens externas de capa |
-| Prévia manual da capa | Imagem do OpenLibrary carregada no formulário; rascunho não salvo |
+| API e banco local | Laravel 13.42, Sanctum 4.4, SQLite; migrations e seeder executados |
+| Testes da API | **41 testes e 435 asserções aprovados** com PHPUnit 12.5.44 e SQLite em memória |
+| Estilo PHP | Pint aprovado em toda a API |
+| Composer | Manifesto válido e requisitos da plataforma conferidos; PHP mínimo 8.4.1 |
+| Análise Flutter | Nenhum problema encontrado |
+| Formatação Dart | 53 arquivos conferidos, sem alterações |
+| Testes Flutter | **51 testes aprovados** |
+| Integração Flutter/Chrome | **Dois testes aprovados contra a API Laravel real** |
+| Prints | Sete PNGs atualizados: login, cadastro de conta, início, biblioteca, formulário, detalhes e Sobre |
 
-Os 33 testes locais abrangem 6 testes do model, 5 de arquitetura, 17 de validadores e 5 de widgets. Os testes cobrem também o campo `coverUrl`, os limites do link HTTPS e a compatibilidade com livros antigos. Os testes de widgets executam o fluxo de cadastro, edição e exclusão em uma janela de 390 × 844, além de carregamento, erro com nova tentativa, preservação do formulário após falha e os casos de capa. Apenas esses testes de interface usam um service controlado em memória.
+A suíte da API cobre os quatro CRUDs, autenticação, token expirado e revogado, limitação de tentativas, campos inválidos, proteção do proprietário, isolamento entre usuários, relações de estante, conflito na exclusão de catálogos, progresso de leitura, capa, factories e seeder idempotente.
 
-O cenário de integração de CRUD usa `FirebaseBootstrap` e `FirestoreBookService` reais e foi preparado para criar, reler, alterar, acompanhar a stream e excluir um livro. Nas duas tentativas de 12/11/2026, ele parou por timeout em `FirebaseBootstrap.initialize()`, antes de iniciar a criação. A inicialização do ambiente de teste ainda está sendo investigada; esse resultado não comprova um defeito no CRUD e não permite aprovar a integração completa desta rodada.
+Os testes Flutter cobrem models, validadores, regras entre camadas, HTTP/JSON, autenticação, estados da interface, CRUD, concorrência e cancelamento das leituras. Os testes de widgets usam repositórios/services controlados e não substituem o teste do servidor.
 
-O cenário separado de captura concluiu o cadastro de três registros apenas no emulador, a abertura das cinco telas, a gravação dos PNGs e a limpeza dos registros. Ele utilizou capas decorativas, sem links externos de imagem. Os testes de widgets e as verificações REST do CRUD e das regras foram aprovados separadamente.
+A integração executou o cadastro de uma conta de teste local, o CRUD de livros pelos services/repositories reais e a captura das sete telas. Os livros criados pelo cenário foram excluídos ao terminar; registros de outras contas não foram alterados. A conta e os catálogos dessa execução são exclusivos da base local de teste.
 
-O script `tools/test_emulator_rules.mjs` verifica também a recusa de dados inválidos, de acesso sem autenticação e de acesso por outro usuário. A rodada REST de 12/11/2026 aprovou o uso opcional de `coverUrl`, a compatibilidade com documentos que não possuem esse campo e as rejeições de links inválidos. Os comandos reproduzíveis estão no README. Na execução automatizada anterior no Windows, foi usado um perfil temporário do Chrome em caminho curto para evitar travamento do IndexedDB em diretórios temporários longos.
+## Reprodução
 
-As imagens estão em `docs/screenshots/`. O aviso vermelho no rodapé é inserido pelo SDK de autenticação para identificar o uso do emulador; ele não aparece na conexão ao Firebase da nuvem.
+Na API, com PHP, extensões e `.env` preparados conforme o README:
 
-## Capa por link e publicação
+```shell
+php artisan migrate --seed
+php artisan test
+php vendor/bin/pint --test
+composer check-platform-reqs
+php artisan serve --host=127.0.0.1 --port=8000
+```
 
-A funcionalidade de capa permite preencher um link HTTPS opcional, visualizar a imagem no formulário, trocar o endereço ou removê-lo salvando o campo vazio. `BookCover` apresenta uma composição decorativa sem link ou quando o carregamento falha. O Firestore guarda apenas `coverUrl`; o model aceita documentos antigos sem o campo, sem exigir migração em lote.
+No Flutter:
 
-A prévia foi conferida manualmente no Flutter web em `http://localhost:8642`: uma imagem do OpenLibrary apareceu no formulário. O cadastro permaneceu como rascunho e não foi salvo nessa conferência.
+```shell
+dart format .
+flutter analyze
+flutter test
+```
 
-O código, os testes, o README, os prints e os guias estão disponíveis no repositório [Viniciusdonini/entrelinhas-flutter](https://github.com/Viniciusdonini/entrelinhas-flutter). Os resultados registrados descrevem as verificações efetivamente realizadas, com as limitações indicadas acima.
+Para repetir a integração web, inicie um ChromeDriver compatível com o Chrome em `chromedriver --port=4444` e execute:
 
-## O que depende da configuração de entrega
+```shell
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/laravel_crud_test.dart -d web-server --headless --browser-name=chrome --browser-dimension=430x1100 --dart-define-from-file=config/api.local.json --no-web-resources-cdn
+```
 
-- Criar ou selecionar o projeto Firebase, preencher o arquivo local da plataforma, habilitar autenticação anônima e publicar as regras.
-- Executar o CRUD contra esse projeto na nuvem. Os testes em emulador não comprovam uma conexão à nuvem já configurada.
-- Compilar e testar em um dispositivo Android ou iOS. As pastas de plataforma foram geradas, mas esta verificação não incluiu APK, dispositivo físico nem build iOS.
-- Gravar o vídeo e enviar o link do repositório pelo Moodle.
+Na execução protegida do Windows, o PHP informou metadados incorretos de leitura/gravação embora as operações reais funcionassem. Um runner privado carregou o autoload diretamente e preservou os testes e a configuração de SQLite em memória. Nenhum arquivo de `vendor/` ou configuração pública do PHPUnit foi alterado para isso. O ambiente de referência foi PHP 8.5.9, Flutter 3.47.1, Dart 3.13.1 e Chrome/ChromeDriver 157.
 
-A configuração e o CRUD de um projeto Firebase na nuvem, os builds mobile e o envio ao Moodle não foram validados nesta execução. Os resultados acima descrevem os testes locais e os emuladores.
+## Limites
+
+- A validação foi local, com API Laravel e navegador. Não foi realizado novo build ou teste em dispositivo Android/iOS.
+- A API não foi publicada em uma hospedagem de produção; os repositórios contêm as instruções para executá-la.
+- Os resultados antigos de Firestore são históricos e não foram utilizados para aprovar a versão Laravel. O projeto e os dados do Firebase não foram apagados.
+- As configurações locais, senhas, tokens, banco SQLite e dependências instaladas não são enviados ao GitHub.
+
+A apresentação tem cinco minutos, na ordem tema verbal → sistema → código, sem slides e sem vídeo. Para Paradigmas, a entrega é somente os links dos repositórios finais em texto online.

@@ -1,6 +1,6 @@
 import 'book_status.dart';
 
-/// A book contains data only: it has no dependency on Flutter or Firebase.
+/// A book contains data only: it has no dependency on Flutter or HTTP.
 class Book {
   const Book({
     this.id = '',
@@ -49,7 +49,7 @@ class Book {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  /// JSON-compatible values; the Firestore service translates timestamps.
+  /// JSON-compatible values; dates use ISO 8601 from the Laravel API.
   Map<String, dynamic> toMap() => {
     'title': title,
     'author': author,

@@ -1,6 +1,6 @@
 import '../models/book.dart';
 
-/// Screens depend on this contract rather than on the Firestore SDK.
+/// Screens depend on use cases; repositories implement persistence separately.
 abstract class BookService {
   Stream<List<Book>> watchBooks();
 

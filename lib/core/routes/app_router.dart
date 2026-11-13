@@ -17,10 +17,28 @@ GoRouter createAppRouter({
   required AppPageBuilder detailsBuilder,
   required AppPageBuilder aboutBuilder,
   required AppPageBuilder errorBuilder,
+  AppPageBuilder? loginBuilder,
+  AppPageBuilder? registerBuilder,
+  Listenable? refreshListenable,
+  GoRouterRedirect? redirect,
 }) => GoRouter(
   initialLocation: '/',
+  refreshListenable: refreshListenable,
+  redirect: redirect,
   errorBuilder: errorBuilder,
   routes: [
+    if (loginBuilder != null)
+      GoRoute(
+        path: AppRoutes.loginPath,
+        name: AppRoutes.login,
+        builder: loginBuilder,
+      ),
+    if (registerBuilder != null)
+      GoRoute(
+        path: AppRoutes.registerPath,
+        name: AppRoutes.register,
+        builder: registerBuilder,
+      ),
     GoRoute(path: '/', name: AppRoutes.home, builder: homeBuilder),
     GoRoute(path: '/biblioteca', name: AppRoutes.books, builder: booksBuilder),
     GoRoute(

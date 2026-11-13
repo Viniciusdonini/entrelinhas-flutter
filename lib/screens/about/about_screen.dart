@@ -5,10 +5,14 @@ import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../services/auth_service.dart';
+import '../../widgets/account_panel.dart';
 import '../../widgets/app_scaffold.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({super.key});
+  const AboutScreen({super.key, this.authService});
+
+  final AuthService? authService;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +27,10 @@ class AboutScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (authService != null) ...[
+                AccountPanel(service: authService!),
+                const SizedBox(height: AppSpacing.lg),
+              ],
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.xl),

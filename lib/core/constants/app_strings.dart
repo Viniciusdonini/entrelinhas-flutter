@@ -106,14 +106,14 @@ abstract final class AppStrings {
       'Entrelinhas é sua biblioteca pessoal: organize os livros que quer ler, acompanhe suas leituras e guarde as impressões de cada história.';
   static const aboutPrivacyTitle = 'Sua biblioteca, seu espaço';
   static const aboutPrivacyDescription =
-      'Seus livros são vinculados a uma sessão anônima neste dispositivo. Não é preciso criar uma senha. Ao limpar os dados do app ou desinstalá-lo, você pode perder o acesso a essa biblioteca. A sincronização entre dispositivos não está disponível.';
+      'Sua biblioteca pertence à sua conta. Entre com e-mail e senha para acessar os livros na API Laravel. A sessão fica somente na memória deste app: ao fechar ou recarregar, entre novamente. Sair encerra o acesso desta sessão.';
   static const aboutVersion = 'Entrelinhas · versão 1.0.0';
   static const aboutFooter = 'Feito para quem encontra um mundo em cada livro.';
   static const setupTitle = 'Vamos abrir sua biblioteca';
   static const setupSubtitle =
       'A conexão com o serviço de dados ainda não está pronta.';
   static const setupMessage =
-      'Configure o Firebase conforme o README ou inicie os emuladores locais. Depois, tente conectar novamente.';
+      'Configure o endereço da API Laravel conforme o README e inicie o servidor. Depois, tente conectar novamente.';
   static const setupLoading = 'Preparando sua biblioteca…';
   static const routeNotFound = 'Não encontramos esta página';
   static const routeNotFoundMessage =
@@ -130,4 +130,31 @@ abstract final class AppStrings {
   static const notesLength = 'Use no máximo 2.000 caracteres.';
   static const coverUrlInvalid = 'Informe um link HTTPS válido para a imagem.';
   static const coverUrlLength = 'Use um link com no máximo 2.048 caracteres.';
+  static const loginTitle = 'Sua estante espera por você';
+  static const loginSubtitle = 'Entre para continuar suas leituras.';
+  static const registerTitle = 'Um espaço para suas histórias';
+  static const registerSubtitle =
+      'Crie sua conta e comece a organizar seus livros.';
+  static const login = 'Entrar';
+  static const register = 'Criar conta';
+  static const authenticating = 'Entrando…';
+  static const registering = 'Criando conta…';
+  static const nameLabel = 'Seu nome';
+  static const emailLabel = 'E-mail';
+  static const passwordLabel = 'Senha';
+  static const passwordConfirmationLabel = 'Confirmar senha';
+  static const showPassword = 'Mostrar senha';
+  static const hidePassword = 'Ocultar senha';
+  static const needAccount = 'Ainda não tenho conta';
+  static const alreadyHaveAccount = 'Já tenho conta';
+  static const sessionInfo =
+      'Ao fechar ou recarregar o app, entre novamente. Seus livros permanecem salvos na sua conta.';
+  static const nameInvalid = 'Informe seu nome, com 2 a 100 caracteres.';
+  static const emailInvalid = 'Informe um e-mail válido.';
+  static const passwordInvalid = 'Use uma senha com 8 a 128 caracteres.';
+  static const passwordsDifferent = 'As senhas devem ser iguais.';
+  static const logout = 'Sair da conta';
+  static const loggingOut = 'Saindo…';
+  static const signedInAs = 'Sua conta';
+  static const refreshLibrary = 'Atualizar biblioteca';
 }

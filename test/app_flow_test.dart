@@ -258,7 +258,7 @@ Future<void> _enterField(WidgetTester tester, String key, String value) async {
 }
 
 /// Only widget tests use this in-memory implementation. Production always uses
-/// FirestoreBookService, and its remote CRUD is covered by integration tests.
+/// LibraryBookService with ApiBookRepository; real CRUD has integration tests.
 class _FakeBookService implements BookService {
   _FakeBookService({this.firstSnapshot, this.loadError, this.createError});
 

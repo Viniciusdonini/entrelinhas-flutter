@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Layer dependencies', () {
-    test('models do not import Flutter or Firebase', () {
+    test('models do not import Flutter or backend libraries', () {
       for (final file in _dartFiles('models')) {
         for (final dependency in _dependencies(file)) {
           expect(
@@ -36,11 +36,40 @@ void main() {
       }
     });
 
+    test('services delegate transport and persistence to repositories', () {
+      for (final file in _dartFiles('services')) {
+        for (final dependency in _dependencies(file)) {
+          expect(
+            _isRemoteDataPackage(dependency),
+            isFalse,
+            reason: '${file.path} must not call backend SDKs directly.',
+          );
+        }
+      }
+    });
+
+    test('repositories do not depend on screens, widgets or services', () {
+      for (final file in _dartFiles('repositories')) {
+        for (final dependency in _dependencies(file)) {
+          expect(
+            _hasLayer(dependency, 'screens') ||
+                _hasLayer(dependency, 'widgets') ||
+                _hasLayer(dependency, 'services') ||
+                _isFlutterWidgetLibrary(dependency),
+            isFalse,
+            reason: '${file.path} must implement data access independently.',
+          );
+        }
+      }
+    });
+
     test('screens access remote data through a service', () {
       for (final file in _dartFiles('screens')) {
         for (final dependency in _dependencies(file)) {
           expect(
-            _isRemoteDataPackage(dependency),
+            _isRemoteDataPackage(dependency) ||
+                _hasLayer(dependency, 'repositories') ||
+                _hasLayer(dependency, 'network'),
             isFalse,
             reason:
                 '${file.path} must delegate backend access to services '

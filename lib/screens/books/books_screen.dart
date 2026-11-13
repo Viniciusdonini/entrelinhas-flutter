@@ -48,6 +48,11 @@ class _BooksScreenState extends State<BooksScreen> {
     title: AppStrings.libraryTitle,
     subtitle: AppStrings.librarySubtitle,
     actions: [
+      OutlinedButton.icon(
+        onPressed: _retry,
+        icon: const Icon(Icons.refresh),
+        label: const Text(AppStrings.refreshLibrary),
+      ),
       FilledButton.icon(
         onPressed: () => context.goNamed(AppRoutes.bookCreate),
         icon: const Icon(Icons.add),
